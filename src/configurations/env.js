@@ -10,7 +10,7 @@ export const config = {
   isProduction: nodeEnv === 'production',
   port: parseInt(process.env.PORT, 10) || 3001,
   cors: {
-    origin: process.env.CORS_ORIGIN || '*'
+    origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : '*'
   },
   logLevel: process.env.LOG_LEVEL || (nodeEnv === 'development' ? 'dev' : 'combined'),
   db: {
