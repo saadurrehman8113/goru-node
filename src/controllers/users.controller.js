@@ -43,6 +43,10 @@ export const login = asyncHandler(async (req, res) => {
     throw createError(401, MESSAGES.INVALID_CREDENTIALS);
   }
 
+  // Set isLogin to true on successful login
+  user.isLogin = true;
+  await user.save();
+
   const tokens = generateTokenPair(user);
 
   res.status(200).json({
@@ -85,6 +89,18 @@ export const refresh = asyncHandler(async (req, res) => {
   }
 });
 
+export const logout = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+
+  // Set isLogin to false on logout
+  await User.findByIdAndUpdate(userId, { isLogin: false });
+
+  res.status(200).json({
+    message: MESSAGES.LOGOUT_SUCCESS,
+    data: {}
+  });
+});
+
 export const getMe = asyncHandler(async (req, res) => {
   res.status(200).json({
     message: 'User profile retrieved successfully',
@@ -95,6 +111,7 @@ export const getMe = asyncHandler(async (req, res) => {
 export default {
   register,
   login,
+  logout,
   refresh,
   getMe
 };

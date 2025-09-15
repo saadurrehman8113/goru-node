@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { login, register, refresh } from '../controllers/users.controller.js';
+import { login, register, refresh, logout } from '../controllers/users.controller.js';
+import { authenticateToken } from '../middlewares/auth.js';
 
 const router = Router();
 
@@ -195,5 +196,40 @@ router.post('/register', register);
  *                   type: object
  */
 router.post('/refresh', refresh);
+
+/**
+ * @openapi
+ * /auth/logout:
+ *   post:
+ *     summary: Logout user and set isLogin to false
+ *     tags:
+ *       - Auth
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Logout successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ */
+router.post('/logout', authenticateToken, logout);
 
 export default router;

@@ -17,9 +17,9 @@ export const config = {
     uri: process.env.MONGODB_URL
   },
   jwt: {
-    accessTokenSecret: process.env.JWT_ACCESS_SECRET || '71G2dc4O6a-05ad-47cd-9a30-2dR1ac474c9U61',
+    accessTokenSecret: process.env.JWT_ACCESS_SECRET || 'e23c16bc-ab3b-4e86-ae2b-3171e4c43ef2',
     refreshTokenSecret:
-      process.env.JWT_REFRESH_SECRET || '87G89c4Of4-9af5-4f65-a830-e5R99c2077bU76',
+      process.env.JWT_REFRESH_SECRET || '87G89e59acd4b-fac6-4f16-bd06-c6045c35102a',
     accessTokenExpiry: process.env.JWT_ACCESS_EXPIRY || '15m',
     refreshTokenExpiry: process.env.JWT_REFRESH_EXPIRY || '7d'
   }

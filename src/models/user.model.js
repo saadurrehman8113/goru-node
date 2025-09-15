@@ -35,6 +35,14 @@ const userSchema = new Schema(
       type: Boolean,
       default: false
     },
+    isAdmin: {
+      type: Boolean,
+      default: false
+    },
+    isLogin: {
+      type: Boolean,
+      default: false
+    },
     status: {
       type: String,
       enum: Object.values(USER_STATUSES),
@@ -69,6 +77,10 @@ userSchema.index({ emailAddress: 1 }, { unique: true });
  *         phoneNumber:
  *           type: string
  *         isEmailVerified:
+ *           type: boolean
+ *         isAdmin:
+ *           type: boolean
+ *         isLogin:
  *           type: boolean
  *         status:
  *           type: string
