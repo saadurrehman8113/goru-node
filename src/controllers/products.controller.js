@@ -21,7 +21,7 @@ const upload = multer({
 });
 
 export const createProduct = asyncHandler(async (req, res) => {
-  const { productName, productDescription, productPrice, isFeatured, stripProductId } =
+  const { productName, productDescription, productPrice, isFeatured, isTrending, stripProductId } =
     req.body || {};
 
   if (!productName || !productDescription || !productPrice) {
@@ -37,12 +37,11 @@ export const createProduct = asyncHandler(async (req, res) => {
     throw createError(400, 'Product price must be a valid positive number');
   }
 
-  const product = await Product.create({
+  await Product.create({
     productName,
     productDescription,
     productPrice: Number(productPrice),
-    isFeatured: isFeatured === 'true' || isFeatured === true, // Handle both string and boolean
-    stripProductId: stripProductId || undefined, // Only include if provided
+    stripProductId,
     productImage: {
       data: req.file.buffer,
       contentType: req.file.mimetype
@@ -51,14 +50,12 @@ export const createProduct = asyncHandler(async (req, res) => {
 
   res.status(201).json({
     message: MESSAGES.PRODUCT_CREATE_SUCCESS,
-    data: {
-      product
-    }
+    data: {}
   });
 });
 
 export const getProducts = asyncHandler(async (req, res) => {
-  const products = await Product.find({}).sort({ createdAt: -1 });
+  const products = await Product.find({ isAvailable: true }).sort({ createdAt: -1 });
 
   res.status(200).json({
     message: MESSAGES.PRODUCTS_GET_SUCCESS,
@@ -99,32 +96,17 @@ export const getProductImage = asyncHandler(async (req, res) => {
 
 export const updateProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { productName, productDescription, productPrice, isFeatured, stripProductId } =
+  const { productName, productDescription, productPrice, isFeatured, isTrending, stripProductId } =
     req.body || {};
 
-  // Check if product exists
-  const existingProduct = await Product.findById(id);
-  if (!existingProduct) {
-    throw createError(404, 'Product not found');
-  }
-
-  // Prepare update data
-  const updateData = {};
-
-  if (productName !== undefined) updateData.productName = productName;
-  if (productDescription !== undefined) updateData.productDescription = productDescription;
-  if (productPrice !== undefined) {
-    if (isNaN(productPrice) || productPrice < 0) {
-      throw createError(400, 'Product price must be a valid positive number');
-    }
-    updateData.productPrice = Number(productPrice);
-  }
-  if (isFeatured !== undefined) {
-    updateData.isFeatured = isFeatured === 'true' || isFeatured === true;
-  }
-  if (stripProductId !== undefined) {
-    updateData.stripProductId = stripProductId || undefined;
-  }
+  const updateData = {
+    productName,
+    productDescription,
+    productPrice,
+    isFeatured,
+    isTrending,
+    stripProductId
+  };
 
   // Handle image update if provided
   if (req.file) {
@@ -135,16 +117,17 @@ export const updateProduct = asyncHandler(async (req, res) => {
   }
 
   // Update the product
-  const updatedProduct = await Product.findByIdAndUpdate(id, updateData, {
-    new: true,
+  const { modifiedCount } = await Product.updateOne({ _id: id }, updateData, {
     runValidators: true
   });
 
+  if (modifiedCount === 0) {
+    throw createError(404, 'Product not found');
+  }
+
   res.status(200).json({
     message: MESSAGES.PRODUCT_UPDATE_SUCCESS,
-    data: {
-      product: updatedProduct
-    }
+    data: {}
   });
 });
 

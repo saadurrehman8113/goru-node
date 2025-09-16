@@ -35,7 +35,17 @@ const productSchema = new Schema(
         required: true
       }
     },
+    isAvailable: {
+      type: Boolean,
+      default: true,
+      required: true
+    },
     isFeatured: {
+      type: Boolean,
+      default: false,
+      required: true
+    },
+    isTrending: {
       type: Boolean,
       default: false,
       required: true
@@ -88,10 +98,18 @@ productSchema.virtual('productImage.base64Data').get(function () {
  *             contentType:
  *               type: string
  *               description: MIME type of the image
+ *         isAvailable:
+ *           type: boolean
+ *           default: true
+ *           description: Whether the product is available for purchase
  *         isFeatured:
  *           type: boolean
  *           default: false
  *           description: Whether the product is featured
+ *         isTrending:
+ *           type: boolean
+ *           default: false
+ *           description: Whether the product is currently trending
  *         stripProductId:
  *           type: string
  *           description: Stripe product ID for payment integration

@@ -36,10 +36,18 @@ const router = Router();
  *                 type: number
  *                 minimum: 0
  *                 description: Price of the product
+ *               isAvailable:
+ *                 type: boolean
+ *                 default: true
+ *                 description: Whether the product is available for purchase
  *               isFeatured:
  *                 type: boolean
  *                 default: false
  *                 description: Whether the product is featured
+ *               isTrending:
+ *                 type: boolean
+ *                 default: false
+ *                 description: Whether the product is currently trending
  *               stripProductId:
  *                 type: string
  *                 description: Stripe product ID for payment integration
@@ -92,6 +100,22 @@ const router = Router();
  *     summary: Get all products
  *     tags:
  *       - Products
+ *     parameters:
+ *       - in: query
+ *         name: isAvailable
+ *         schema:
+ *           type: boolean
+ *         description: Filter products by availability status
+ *       - in: query
+ *         name: isFeatured
+ *         schema:
+ *           type: boolean
+ *         description: Filter products by featured status
+ *       - in: query
+ *         name: isTrending
+ *         schema:
+ *           type: boolean
+ *         description: Filter products by trending status
  *     responses:
  *       200:
  *         description: Products retrieved successfully
@@ -238,9 +262,15 @@ router.get('/:id/image', getProductImage);
  *                 type: number
  *                 minimum: 0
  *                 description: Price of the product
+ *               isAvailable:
+ *                 type: boolean
+ *                 description: Whether the product is available for purchase
  *               isFeatured:
  *                 type: boolean
  *                 description: Whether the product is featured
+ *               isTrending:
+ *                 type: boolean
+ *                 description: Whether the product is currently trending
  *               stripProductId:
  *                 type: string
  *                 description: Stripe product ID for payment integration
