@@ -45,7 +45,9 @@ export const createProduct = asyncHandler(async (req, res) => {
     productImage: {
       data: req.file.buffer,
       contentType: req.file.mimetype
-    }
+    },
+    isFeatured,
+    isTrending
   });
 
   res.status(201).json({
@@ -70,6 +72,7 @@ export const getProductById = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
   const product = await Product.findById(id);
+
   if (!product) {
     throw createError(404, 'Product not found');
   }
@@ -134,14 +137,12 @@ export const updateProduct = asyncHandler(async (req, res) => {
 export const deleteProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  // Check if product exists
-  const product = await Product.findById(id);
-  if (!product) {
+  // Delete the product
+  const { modifiedCount } = await Product.updateOne({ _id: id, isAvailable: false });
+
+  if (modifiedCount === 0) {
     throw createError(404, 'Product not found');
   }
-
-  // Delete the product
-  await Product.findByIdAndDelete(id);
 
   res.status(200).json({
     message: MESSAGES.PRODUCT_DELETE_SUCCESS,
