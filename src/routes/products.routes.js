@@ -44,10 +44,6 @@ const router = Router();
  *                 type: boolean
  *                 default: false
  *                 description: Whether the product is featured
- *               isTrending:
- *                 type: boolean
- *                 default: false
- *                 description: Whether the product is currently trending
  *               stripProductId:
  *                 type: string
  *                 description: Stripe product ID for payment integration
@@ -111,11 +107,6 @@ const router = Router();
  *         schema:
  *           type: boolean
  *         description: Filter products by featured status
- *       - in: query
- *         name: isTrending
- *         schema:
- *           type: boolean
- *         description: Filter products by trending status
  *     responses:
  *       200:
  *         description: Products retrieved successfully
@@ -268,9 +259,6 @@ router.get('/:id/image', getProductImage);
  *               isFeatured:
  *                 type: boolean
  *                 description: Whether the product is featured
- *               isTrending:
- *                 type: boolean
- *                 description: Whether the product is currently trending
  *               stripProductId:
  *                 type: string
  *                 description: Stripe product ID for payment integration

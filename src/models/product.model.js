@@ -45,11 +45,6 @@ const productSchema = new Schema(
       default: false,
       required: true
     },
-    isTrending: {
-      type: Boolean,
-      default: false,
-      required: true
-    },
     stripProductId: {
       type: String,
       required: false
@@ -106,10 +101,6 @@ productSchema.virtual('productImage.base64Data').get(function () {
  *           type: boolean
  *           default: false
  *           description: Whether the product is featured
- *         isTrending:
- *           type: boolean
- *           default: false
- *           description: Whether the product is currently trending
  *         stripProductId:
  *           type: string
  *           description: Stripe product ID for payment integration

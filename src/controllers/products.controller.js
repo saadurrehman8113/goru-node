@@ -21,7 +21,7 @@ const upload = multer({
 });
 
 export const createProduct = asyncHandler(async (req, res) => {
-  const { productName, productDescription, productPrice, isFeatured, isTrending, stripProductId } =
+  const { productName, productDescription, productPrice, isFeatured, stripProductId } =
     req.body || {};
 
   if (!productName || !productDescription || !productPrice) {
@@ -46,8 +46,7 @@ export const createProduct = asyncHandler(async (req, res) => {
       data: req.file.buffer,
       contentType: req.file.mimetype
     },
-    isFeatured,
-    isTrending
+    isFeatured
   });
 
   res.status(201).json({
@@ -99,7 +98,7 @@ export const getProductImage = asyncHandler(async (req, res) => {
 
 export const updateProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { productName, productDescription, productPrice, isFeatured, isTrending, stripProductId } =
+  const { productName, productDescription, productPrice, isFeatured, stripProductId } =
     req.body || {};
 
   const updateData = {
@@ -107,7 +106,6 @@ export const updateProduct = asyncHandler(async (req, res) => {
     productDescription,
     productPrice,
     isFeatured,
-    isTrending,
     stripProductId
   };
 
