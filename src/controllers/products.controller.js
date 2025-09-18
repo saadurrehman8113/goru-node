@@ -56,7 +56,9 @@ export const createProduct = asyncHandler(async (req, res) => {
 });
 
 export const getProducts = asyncHandler(async (req, res) => {
-  const products = await Product.find({ isAvailable: true }).sort({ createdAt: -1 });
+  const products = await Product.find({ isAvailable: true }).select('-productImage').sort({
+    createdAt: -1
+  });
 
   res.status(200).json({
     message: MESSAGES.PRODUCTS_GET_SUCCESS,
@@ -85,15 +87,18 @@ export const getProductById = asyncHandler(async (req, res) => {
 });
 
 export const getProductImage = asyncHandler(async (req, res) => {
-  const { id } = req.params;
+  const { productId } = req.params;
 
-  const product = await Product.findById(id);
-  if (!product || !product.productImage.data) {
-    throw createError(404, 'Product image not found');
-  }
+  const product = await Product.findOne({ _id: productId, isAvailable: true }).select(
+    'productImage'
+  );
 
-  res.set('Content-Type', product.productImage.contentType);
-  res.send(product.productImage.data);
+  res.status(200).json({
+    message: 'Product image retrieved successfully',
+    data: {
+      productImage: product.productImage
+    }
+  });
 });
 
 export const updateProduct = asyncHandler(async (req, res) => {

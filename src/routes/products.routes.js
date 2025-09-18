@@ -123,7 +123,30 @@ const router = Router();
  *                     products:
  *                       type: array
  *                       items:
- *                         $ref: '#/components/schemas/Product'
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: string
+ *                           productName:
+ *                             type: string
+ *                           productDescription:
+ *                             type: string
+ *                           productPrice:
+ *                             type: number
+ *                           productPriceCurrency:
+ *                             type: string
+ *                           isAvailable:
+ *                             type: boolean
+ *                           isFeatured:
+ *                             type: boolean
+ *                           stripProductId:
+ *                             type: string
+ *                           createdAt:
+ *                             type: string
+ *                             format: date-time
+ *                           updatedAt:
+ *                             type: string
+ *                             format: date-time
  *                     count:
  *                       type: number
  *                       description: Total number of products
@@ -220,7 +243,7 @@ router.get('/:id', getProductById);
  *                 data:
  *                   type: object
  */
-router.get('/:id/image', getProductImage);
+router.get('/:productId/image', getProductImage);
 
 /**
  * @openapi
