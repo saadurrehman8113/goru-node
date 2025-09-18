@@ -47,11 +47,11 @@ export const getWishlistItems = asyncHandler(async (req, res) => {
 });
 
 export const deleteWishlistItem = asyncHandler(async (req, res) => {
-  const { userId, wishlistItemId } = req.params;
+  const { userId, productId } = req.params;
 
-  // Find and delete the wishlist item
+  // Find and delete the wishlist item by product ID
   const { deletedCount } = await Wishlist.deleteOne({
-    _id: wishlistItemId,
+    product: productId,
     user: userId
   });
 

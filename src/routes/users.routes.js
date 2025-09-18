@@ -15,7 +15,7 @@ import { authenticateToken } from '../middlewares/auth.js';
 import {
   createWishlistItemSchema,
   userIdParamSchema,
-  wishlistItemIdParamSchema,
+  productIdParamSchema,
   validate
 } from '../validations/wishlist.validation.js';
 import { createCartItemSchema, validate as validateCart } from '../validations/cart.validation.js';
@@ -203,7 +203,7 @@ router.get(
 
 /**
  * @openapi
- * /users/{userId}/wishlist/{wishlistItemId}:
+ * /users/{userId}/wishlist/{productId}:
  *   delete:
  *     summary: Remove a product from user's wishlist
  *     tags:
@@ -218,11 +218,11 @@ router.get(
  *           type: string
  *         description: User ID
  *       - in: path
- *         name: wishlistItemId
+ *         name: productId
  *         required: true
  *         schema:
  *           type: string
- *         description: Wishlist item ID
+ *         description: Product ID
  *     responses:
  *       200:
  *         description: Wishlist item removed successfully
@@ -255,9 +255,9 @@ router.get(
  *                   type: string
  */
 router.delete(
-  '/:userId/wishlist/:wishlistItemId',
+  '/:userId/wishlist/:productId',
   authenticateToken,
-  validate(wishlistItemIdParamSchema, 'params'),
+  validate(productIdParamSchema, 'params'),
   deleteWishlistItem
 );
 

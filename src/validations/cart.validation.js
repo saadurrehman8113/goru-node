@@ -8,13 +8,7 @@ export const createCartItemSchema = Joi.object({
     .messages({
       'string.pattern.base': 'Product ID must be a valid MongoDB ObjectId',
       'any.required': 'Product ID is required'
-    }),
-  quantity: Joi.number().integer().min(1).max(100).default(1).messages({
-    'number.base': 'Quantity must be a number',
-    'number.integer': 'Quantity must be an integer',
-    'number.min': 'Quantity must be at least 1',
-    'number.max': 'Quantity cannot exceed 100'
-  })
+    })
 });
 
 // Validation schema for user ID parameter
@@ -38,11 +32,9 @@ export const validate = (schema, property = 'body') => {
 
     if (error) {
       const errorMessage = error.details.map((detail) => detail.message).join(', ');
-
-      return res.status(400).json({
-        message: errorMessage,
-        data: {}
-      });
+      const validationError = new Error(errorMessage);
+      validationError.status = 400;
+      return next(validationError);
     }
 
     // Replace the original data with validated and sanitized data

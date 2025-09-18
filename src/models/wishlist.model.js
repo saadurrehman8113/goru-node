@@ -24,7 +24,7 @@ const wishlistSchema = new Schema(
 
 // Indexes
 wishlistSchema.index({ user: 1 });
-wishlistSchema.index({ user: 1, product: 1 }, { unique: true }); // Prevent duplicate products in same user's wishlist
+wishlistSchema.index({ user: 1, product: 1 }); // Compound index for efficient querying (duplicate prevention handled at application level)
 
 /**
  * @openapi

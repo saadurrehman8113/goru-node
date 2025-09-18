@@ -14,8 +14,8 @@ export const createCartItem = asyncHandler(async (req, res) => {
   });
 
   if (existingCartItem) {
-    // Update quantity if item already exists
-    existingCartItem.quantity += quantity;
+    // Increment quantity if item already exists
+    existingCartItem.quantity += 1;
     await existingCartItem.save();
 
     res.status(200).json({
@@ -23,7 +23,7 @@ export const createCartItem = asyncHandler(async (req, res) => {
       data: {}
     });
   } else {
-    // Create new cart item
+    // Create new cart item with default quantity of 1
     await Cart.create({
       user: userId,
       product: productId

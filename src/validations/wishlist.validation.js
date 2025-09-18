@@ -22,8 +22,8 @@ export const userIdParamSchema = Joi.object({
     })
 });
 
-// Validation schema for wishlist item ID parameter
-export const wishlistItemIdParamSchema = Joi.object({
+// Validation schema for product ID parameter
+export const productIdParamSchema = Joi.object({
   userId: Joi.string()
     .pattern(/^[0-9a-fA-F]{24}$/)
     .required()
@@ -31,12 +31,12 @@ export const wishlistItemIdParamSchema = Joi.object({
       'string.pattern.base': 'User ID must be a valid MongoDB ObjectId',
       'any.required': 'User ID is required'
     }),
-  wishlistItemId: Joi.string()
+  productId: Joi.string()
     .pattern(/^[0-9a-fA-F]{24}$/)
     .required()
     .messages({
-      'string.pattern.base': 'Wishlist item ID must be a valid MongoDB ObjectId',
-      'any.required': 'Wishlist item ID is required'
+      'string.pattern.base': 'Product ID must be a valid MongoDB ObjectId',
+      'any.required': 'Product ID is required'
     })
 });
 
@@ -50,11 +50,9 @@ export const validate = (schema, property = 'body') => {
 
     if (error) {
       const errorMessage = error.details.map((detail) => detail.message).join(', ');
-
-      return res.status(400).json({
-        message: errorMessage,
-        data: {}
-      });
+      const validationError = new Error(errorMessage);
+      validationError.status = 400;
+      return next(validationError);
     }
 
     // Replace the original data with validated and sanitized data
@@ -66,6 +64,6 @@ export const validate = (schema, property = 'body') => {
 export default {
   createWishlistItemSchema,
   userIdParamSchema,
-  wishlistItemIdParamSchema,
+  productIdParamSchema,
   validate
 };
