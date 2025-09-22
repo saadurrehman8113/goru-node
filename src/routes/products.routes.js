@@ -2,6 +2,7 @@ import { Router } from 'express';
 import {
   createProduct,
   getProducts,
+  getFeaturedProducts,
   getProductById,
   getProductImage,
   updateProduct,
@@ -163,6 +164,70 @@ const router = Router();
  *                   type: object
  */
 router.get('/', getProducts);
+
+/**
+ * @openapi
+ * /products/featured:
+ *   get:
+ *     summary: Get all featured products
+ *     tags:
+ *       - Products
+ *     responses:
+ *       200:
+ *         description: Featured products retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     products:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: string
+ *                           productName:
+ *                             type: string
+ *                           productDescription:
+ *                             type: string
+ *                           productPrice:
+ *                             type: number
+ *                           productPriceCurrency:
+ *                             type: string
+ *                           isAvailable:
+ *                             type: boolean
+ *                           isFeatured:
+ *                             type: boolean
+ *                           stripProductId:
+ *                             type: string
+ *                           createdAt:
+ *                             type: string
+ *                             format: date-time
+ *                           updatedAt:
+ *                             type: string
+ *                             format: date-time
+ *                     count:
+ *                       type: number
+ *                       description: Total number of featured products
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ */
+router.get('/featured', getFeaturedProducts);
 
 router.post('/', upload.single('productImage'), createProduct);
 

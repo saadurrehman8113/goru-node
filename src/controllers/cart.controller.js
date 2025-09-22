@@ -59,9 +59,9 @@ export const getCartItems = asyncHandler(async (req, res) => {
 
 export const deleteCartItem = asyncHandler(async (req, res) => {
   const { userId } = req.params;
-  const { productId } = req.query;
+  const { productId, multi } = req.query;
 
-  // Find and delete the cart item
+  // Find the cart item
   const cartItem = await Cart.findOne({
     product: productId,
     user: userId
@@ -71,19 +71,48 @@ export const deleteCartItem = asyncHandler(async (req, res) => {
     throw createError(404, 'Cart item not found');
   }
 
-  if (cartItem.quantity > 1) {
-    cartItem.quantity -= 1;
-    await cartItem.save();
-  } else {
+  // Check if multi is true (remove completely) or false/undefined (decrease quantity)
+  if (multi === 'true') {
+    // Remove the product completely from cart
     await Cart.deleteOne({
       product: productId,
       user: userId
     });
+  } else {
+    // Decrease quantity by 1, remove if quantity becomes 0
+    if (cartItem.quantity > 1) {
+      cartItem.quantity -= 1;
+      await cartItem.save();
+    } else {
+      await Cart.deleteOne({
+        product: productId,
+        user: userId
+      });
+    }
   }
 
   res.status(200).json({
     message: MESSAGES.CART_DELETE_SUCCESS,
     data: {}
+  });
+});
+
+export const getCartItemQuantity = asyncHandler(async (req, res) => {
+  const { userId, productId } = req.params;
+
+  // Find the cart item
+  const cartItem =
+    (await Cart.findOne({
+      product: productId,
+      user: userId
+    })) || {};
+
+  res.status(200).json({
+    message: 'Cart item quantity retrieved successfully',
+    data: {
+      productId,
+      quantity: cartItem.quantity || 0
+    }
   });
 });
 
@@ -105,5 +134,6 @@ export default {
   createCartItem,
   getCartItems,
   deleteCartItem,
+  getCartItemQuantity,
   clearCart
 };

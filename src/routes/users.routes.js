@@ -9,6 +9,7 @@ import {
   createCartItem,
   getCartItems,
   deleteCartItem,
+  getCartItemQuantity,
   clearCart
 } from '../controllers/cart.controller.js';
 import { authenticateToken } from '../middlewares/auth.js';
@@ -385,7 +386,38 @@ router.delete(
  *               properties:
  *                 message:
  *                   type: string
- *   delete:
+ */
+router.post(
+  '/:userId/cart',
+  authenticateToken,
+  validateCart(userIdParamSchema, 'params'),
+  validateCart(createCartItemSchema, 'body'),
+  createCartItem
+);
+router.get(
+  '/:userId/cart',
+  authenticateToken,
+  validateCart(userIdParamSchema, 'params'),
+  getCartItems
+);
+router.post(
+  '/:userId/cart/clear',
+  authenticateToken,
+  validateCart(userIdParamSchema, 'params'),
+  clearCart
+);
+
+router.get(
+  '/:userId/cart/:productId/quantity',
+  authenticateToken,
+  validate(productIdParamSchema, 'params'),
+  getCartItemQuantity
+);
+
+/**
+ * @openapi
+ * /users/{userId}/cart/clear:
+ *   post:
  *     summary: Clear user's cart
  *     tags:
  *       - Users
@@ -413,6 +445,7 @@ router.delete(
  *                   properties:
  *                     deletedCount:
  *                       type: number
+ *                       description: Number of items removed from cart
  *       401:
  *         description: Unauthorized - Invalid or missing token
  *         content:
@@ -422,32 +455,101 @@ router.delete(
  *               properties:
  *                 message:
  *                   type: string
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
  */
-router.post(
-  '/:userId/cart',
-  authenticateToken,
-  validateCart(userIdParamSchema, 'params'),
-  validateCart(createCartItemSchema, 'body'),
-  createCartItem
-);
-router.get(
-  '/:userId/cart',
-  authenticateToken,
-  validateCart(userIdParamSchema, 'params'),
-  getCartItems
-);
-router.delete(
-  '/:userId/cart',
-  authenticateToken,
-  validateCart(userIdParamSchema, 'params'),
-  clearCart
-);
+
+/**
+ * @openapi
+ * /users/{userId}/cart/{productId}/quantity:
+ *   get:
+ *     summary: Get quantity of a specific product in user's cart
+ *     tags:
+ *       - Users
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: User ID
+ *       - in: path
+ *         name: productId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Product ID to get quantity for
+ *     responses:
+ *       200:
+ *         description: Cart item quantity retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     productId:
+ *                       type: string
+ *                       description: The product ID
+ *                     quantity:
+ *                       type: number
+ *                       description: The quantity of the product in the cart
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       404:
+ *         description: Product not found in cart
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ */
 
 /**
  * @openapi
  * /users/{userId}/cart:
  *   delete:
- *     summary: Remove a product from user's cart
+ *     summary: Remove or decrease quantity of a product from user's cart
  *     tags:
  *       - Users
  *     security:
@@ -465,9 +567,16 @@ router.delete(
  *         schema:
  *           type: string
  *         description: Product ID to remove from cart
+ *       - in: query
+ *         name: multi
+ *         required: false
+ *         schema:
+ *           type: boolean
+ *           default: false
+ *         description: If true, remove the product completely from cart. If false or not provided, decrease quantity by 1
  *     responses:
  *       200:
- *         description: Cart item removed successfully
+ *         description: Cart item updated successfully (removed or quantity decreased)
  *         content:
  *           application/json:
  *             schema:

@@ -69,6 +69,22 @@ export const getProducts = asyncHandler(async (req, res) => {
   });
 });
 
+export const getFeaturedProducts = asyncHandler(async (req, res) => {
+  const products = await Product.find({ isAvailable: true, isFeatured: true })
+    .select('-productImage')
+    .sort({
+      createdAt: -1
+    });
+
+  res.status(200).json({
+    message: 'Featured products retrieved successfully',
+    data: {
+      products,
+      count: products.length
+    }
+  });
+});
+
 export const getProductById = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
@@ -141,7 +157,7 @@ export const deleteProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
   // Delete the product
-  const { modifiedCount } = await Product.updateOne({ _id: id, isAvailable: false });
+  const { modifiedCount } = await Product.updateOne({ _id: id }, { isAvailable: false });
 
   if (modifiedCount === 0) {
     throw createError(404, 'Product not found');
@@ -158,6 +174,7 @@ export { upload };
 export default {
   createProduct,
   getProducts,
+  getFeaturedProducts,
   getProductById,
   getProductImage,
   updateProduct,
