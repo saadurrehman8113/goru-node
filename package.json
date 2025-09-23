@@ -5,7 +5,7 @@
   "type": "module",
   "main": "src/server.js",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development nodemon",
+    "dev": "cross-env NODE_ENV=development nodemon src/server.js",
     "start": "cross-env NODE_ENV=production node src/server.js",
     "lint": "eslint \"src/**/*.js\"",
     "format": "prettier --write \"**/*.{js,json,md}\""
@@ -24,6 +24,7 @@
     "mongoose": "^8.18.1",
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
+    "stripe": "^18.5.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
   },

@@ -1,11 +1,20 @@
 import createError from 'http-errors';
 import Cart from '../models/cart.model.js';
+import Product from '../models/product.model.js';
 import asyncHandler from '../utils/asyncHandler.js';
 import { MESSAGES } from '../constants/index.js';
 
 export const createCartItem = asyncHandler(async (req, res) => {
   const { userId } = req.params;
   const { productId } = req.body;
+
+  const { isAvailable } = await Product.findOne({
+    _id: productId
+  });
+
+  if (!isAvailable) {
+    throw createError(400, 'Product is out of stock');
+  }
 
   // Check if the product is already in the user's cart
   const existingCartItem = await Cart.findOne({

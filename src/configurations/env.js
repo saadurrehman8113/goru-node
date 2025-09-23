@@ -22,6 +22,10 @@ export const config = {
       process.env.JWT_REFRESH_SECRET || '87G89e59acd4b-fac6-4f16-bd06-c6045c35102a',
     accessTokenExpiry: process.env.JWT_ACCESS_EXPIRY || '15m',
     refreshTokenExpiry: process.env.JWT_REFRESH_EXPIRY || '7d'
+  },
+  stripe: {
+    secretKey: process.env.STRIPE_SECRET_KEY,
+    publishableKey: process.env.STRIPE_PUBLISHABLE_KEY
   }
 };
 
